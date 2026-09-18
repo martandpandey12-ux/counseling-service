@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IndiaCounsel | Login</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #0d1422;
+      --panel-2: #101a2d;
+      --border: rgba(148, 163, 184, .16);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #818cf8;
+      --input: #080f1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(56,189,248,.13), transparent 30%),
+        radial-gradient(circle at 85% 90%, rgba(129,140,248,.14), transparent 32%),
+        var(--bg);
+    }
+
+    .page {
+      width: min(100%, 980px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.15rem;
+      font-weight: 750;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #06111d;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 2.7rem);
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .login-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .login-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(16,26,45,.96), rgba(10,16,29,.96));
+      box-shadow: 0 24px 65px rgba(0,0,0,.32);
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      border-radius: 13px;
+      color: var(--accent);
+      background: rgba(56,189,248,.1);
+      border: 1px solid rgba(56,189,248,.15);
+      font-size: 1.25rem;
+    }
+
+    .counselor .card-icon {
+      color: #a5b4fc;
+      background: rgba(129,140,248,.1);
+      border-color: rgba(129,140,248,.15);
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 1.45rem;
+      letter-spacing: -.025em;
+    }
+
+    .description {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: .9rem;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #dbeafe;
+      font-size: .86rem;
+      font-weight: 650;
+    }
+
+    input {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      border: 1px solid rgba(100,116,139,.28);
+      border-radius: 11px;
+      outline: none;
+      color: var(--text);
+      background: var(--input);
+      font: inherit;
+      transition: .2s ease;
+    }
+
+    input::placeholder { color: #526176; }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56,189,248,.13);
+    }
+
+    .counselor input:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(129,140,248,.13);
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin: 4px 0 22px;
+    }
+
+    .forgot {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 650;
+    }
+
+    .counselor .forgot { color: #a5b4fc; }
+
+    .forgot:hover { text-decoration: underline; }
+
+    button {
+      width: 100%;
+      height: 50px;
+      border: 0;
+      border-radius: 11px;
+      color: #06111d;
+      background: linear-gradient(135deg, var(--accent), #22d3ee);
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform .2s, filter .2s, box-shadow .2s;
+    }
+
+    .counselor button {
+      background: linear-gradient(135deg, var(--accent-2), #6366f1);
+      color: white;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.07);
+      box-shadow: 0 10px 25px rgba(56,189,248,.18);
+    }
+
+    .counselor button:hover {
+      box-shadow: 0 10px 25px rgba(99,102,241,.2);
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 18px; }
+
+      .login-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 26px;
+      }
+
+      .header {
+        margin-bottom: 22px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .login-card { padding: 22px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="header">
+      <a href="/" class="brand" aria-label="IndiaCounsel home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        IndiaCounsel
+      </a>
+      <h1>Welcome back</h1>
+      <p class="intro">Choose your account type to continue.</p>
+    </header>
+
+    <section class="login-grid" aria-label="Login options">
+
+      <article class="login-card client">
+        <div class="card-icon" aria-hidden="true">◎</div>
+        <h2>Client Login</h2>
+        <p class="description">
+          Sign in to manage your appointments and connect with your counselor.
+        </p>
+
+        <form action="/client/login" method="post">
+          <div class="field">
+            <label for="client-username">Username</label>
+            <input
+              id="client-username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              placeholder="Enter your username"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="client-password">Password</label>
+            <input
+              id="client-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+            >
+          </div>
+
+          <div class="form-footer">
+            <a class="forgot" href="/client/forgot-password">Forgot password?</a>
+          </div>
+
+          <button type="submit">Log in as Client</button>
+        </form>
+      </article>
+
+      <article class="login-card counselor">
+        <div class="card-icon" aria-hidden="true">◇</div>
+        <h2>Counselor Login</h2>
+        <p class="description">
+          Sign in to manage your counselor profile, sessions, and appointments.
+        </p>
+
+        <form action="/counselor/login" method="post">
+          <div class="field">
+            <label for="counselor-username">Username</label>
+            <input
+              id="counselor-username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              placeholder="Enter your username"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label for="counselor-password">Password</label>
+            <input
+              id="counselor-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+            >
+          </div>
+
+          <div class="form-footer">
+            <a class="forgot" href="/counselor/forgot-password">Forgot password?</a>
+          </div>
+
+          <button type="submit">Log in as Counselor</button>
+        </form>
+      </article>
+
+    </section>
+  </main>
+</body>
+</html>
