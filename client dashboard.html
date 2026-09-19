@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard — IndiaCounsel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;600;700&display=swap');
+
+:root {
+  --ink:            #15131c;
+  --ink-raised:      #1d1a26;
+  --ink-raised-2:    #262230;
+  --line:            #35303f;
+  --line-soft:        #2a2632;
+  --text:            #f2ede3;
+  --text-muted:       #b5adc2;
+  --text-faint:       #7d7690;
+  --gold:            #e2a857;
+  --gold-strong:      #f0bd75;
+  --gold-wash:        rgba(226,168,87,0.14);
+  --sage:            #8caa92;
+  --sage-soft:        #4d5b50;
+  --sage-wash:        rgba(140,170,146,0.14);
+  --danger:          #d97f6b;
+  --danger-wash:      rgba(217,127,107,0.14);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --ease: cubic-bezier(0.4,0,0.2,1);
+}
+
+:root[data-theme="light"] {
+  --ink:            #f7f4ee;
+  --ink-raised:      #ffffff;
+  --ink-raised-2:    #f0ebe1;
+  --line:            #ddd5c7;
+  --line-soft:        #e7e1d5;
+  --text:            #241f2e;
+  --text-muted:       #5c5468;
+  --text-faint:       #8a8296;
+  --gold:            #c07f2c;
+  --gold-strong:      #a86a1f;
+  --gold-wash:        rgba(192,127,44,0.12);
+  --sage:            #4c6b52;
+  --sage-soft:        #cfdcd1;
+  --sage-wash:        rgba(76,107,82,0.12);
+  --danger:          #b5503b;
+  --danger-wash:      rgba(181,80,59,0.1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ink:            #f7f4ee;
+    --ink-raised:      #ffffff;
+    --ink-raised-2:    #f0ebe1;
+    --line:            #ddd5c7;
+    --line-soft:        #e7e1d5;
+    --text:            #241f2e;
+    --text-muted:       #5c5468;
+    --text-faint:       #8a8296;
+    --gold:            #c07f2c;
+    --gold-strong:      #a86a1f;
+    --gold-wash:        rgba(192,127,44,0.12);
+    --sage:            #4c6b52;
+    --sage-soft:        #cfdcd1;
+    --sage-wash:        rgba(76,107,82,0.12);
+    --danger:          #b5503b;
+    --danger-wash:      rgba(181,80,59,0.1);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+button { font-family: inherit; cursor: pointer; }
+a { color: inherit; }
+input, select {
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--ink-raised-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.7rem;
+  width: 100%;
+}
+input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--gold-strong);
+  outline-offset: 1px;
+}
+
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--gold-strong);
+  outline-offset: 2px;
+}
+
+/* ---------- Layout shell ---------- */
+
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--ink-raised);
+  border-right: 1px solid var(--line-soft);
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.brand {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.brand span { color: var(--gold); }
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.side-nav li a {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.side-nav li a .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.side-nav li a.active {
+  background: var(--gold-wash);
+  color: var(--gold-strong);
+}
+
+.side-nav li a:hover:not(.active) {
+  background: var(--ink-raised-2);
+  color: var(--text);
+}
+
+.client-card {
+  margin-top: auto;
+  padding: 1rem;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--sage));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; color: #1c1608;
+  flex-shrink: 0;
+}
+
+.client-card .name { font-size: 0.9rem; font-weight: 600; }
+.client-card .role { font-size: 0.78rem; color: var(--text-faint); }
+
+main {
+  padding: 2rem clamp(1.25rem, 3vw, 2.75rem) 4rem;
+  max-width: 1180px;
+}
+
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.topbar h1 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.topbar .today {
+  font-size: 0.9rem;
+  color: var(--text-faint);
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  background: var(--ink-raised);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 1.1rem;
+}
+
+.card-subtext {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  margin-top: -0.6rem;
+  margin-bottom: 1.2rem;
+}
+
+.section-label {
+  font-size: 0.78rem;
+  color: var(--sage);
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+section { margin-bottom: 2rem; scroll-margin-top: 1.5rem; }
+
+/* ---------- Profile ---------- */
+
+.profile-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.profile-avatar-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  width: 96px;
+}
+
+.profile-avatar-block .avatar {
+  width: 72px; height: 72px;
+  font-size: 1.4rem;
+}
+
+.profile-avatar-block .tag {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.profile-form {
+  flex: 1;
+  min-width: 260px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
+.profile-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.save-btn {
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--gold);
+  color: #1c1608;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background-color 0.2s var(--ease);
+}
+.save-btn:hover { background: var(--gold-strong); }
+
+.saved-hint {
+  font-size: 0.8rem;
+  color: var(--sage);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.saved-hint.show { opacity: 1; }
+
+/* ---------- Booking grid ---------- */
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 1.25rem;
+}
+
+/* Calendar */
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+.cal-head h2 { margin: 0; }
+
+.cal-nav {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.cal-nav button {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.cal-nav button:hover { border-color: var(--gold); color: var(--gold); }
+
+.cal-weekdays, .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+
+.cal-weekdays span {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  padding-bottom: 0.4rem;
+}
+
+.cal-day {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background-color 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.cal-day.empty { visibility: hidden; }
+
+.cal-day.past {
+  color: var(--text-faint);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cal-day.available { cursor: pointer; }
+.cal-day.available:hover { border-color: var(--sage); }
+
+.cal-day.today { font-weight: 700; color: var(--gold-strong); }
+
+.cal-day.selected {
+  background: var(--gold);
+  color: #1c1608;
+  font-weight: 700;
+}
+
+.cal-day .has-appt {
+  position: absolute;
+  bottom: 4px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+.cal-day.selected .has-appt { background: #1c1608; }
+
+/* Booking form */
+
+.mode-toggle, .pref-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.mode-toggle button, .pref-toggle button {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.65rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s var(--ease);
+}
+
+.mode-toggle button.active, .pref-toggle button.active {
+  border-color: var(--sage);
+  background: var(--sage-wash);
+  color: var(--sage);
+}
+
+.location-field {
+  margin-bottom: 1rem;
+}
+
+.location-field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.required-mark { color: var(--danger); margin-left: 0.15rem; }
+
+.field-error {
+  font-size: 0.76rem;
+  color: var(--danger);
+  margin-top: 0.3rem;
+  display: none;
+}
+.field-error.show { display: block; }
+
+.counselor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+  max-height: 210px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.counselor-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.counselor-option.selected {
+  border-color: var(--gold);
+  background: var(--gold-wash);
+}
+
+.counselor-option .avatar { width: 30px; height: 30px; font-size: 0.75rem; }
+.counselor-option .info { flex: 1; min-width: 0; }
+.counselor-option .info .name { font-size: 0.88rem; font-weight: 600; }
+.counselor-option .info .spec { font-size: 0.76rem; color: var(--text-faint); }
+
+.assign-note {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--sage-wash);
+  border: 1px solid var(--sage-soft);
+  color: var(--sage);
+  font-size: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.slot-section h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.slot-btn {
+  padding: 0.55rem 0.3rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  transition: all 0.18s var(--ease);
+}
+
+.slot-btn:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
+.slot-btn:not(:disabled):hover { border-color: var(--gold); color: var(--text); }
+
+.slot-btn.selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #1c1608;
+  font-weight: 700;
+}
+
+.empty-hint { font-size: 0.85rem; color: var(--text-faint); padding: 0.75rem 0; }
+
+.confirm-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--gold);
+  color: #1c1608;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background-color 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+.confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.confirm-btn:not(:disabled):hover { background: var(--gold-strong); }
+
+/* ---------- Appointments ---------- */
+
+.appt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.appt-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.appt-item {
+  display: flex;
+  gap: 0.9rem;
+  padding: 0.9rem;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  align-items: center;
+}
+
+.appt-date-badge {
+  flex-shrink: 0;
+  width: 52px;
+  text-align: center;
+  padding: 0.4rem 0.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--ink-raised-2);
+}
+
+.appt-date-badge .month {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  letter-spacing: 0.03em;
+}
+
+.appt-date-badge .day {
+  font-family: 'Fraunces', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gold-strong);
+}
+
+.appt-info { flex: 1; min-width: 0; }
+.appt-info .with { font-size: 0.92rem; font-weight: 600; }
+.appt-info .meta { font-size: 0.78rem; color: var(--text-faint); margin-top: 0.15rem; }
+.appt-info .loc { font-size: 0.76rem; color: var(--text-faint); margin-top: 0.1rem; }
+
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  margin-right: 0.4rem;
+}
+
+.badge.online { background: var(--sage-wash); color: var(--sage); }
+.badge.in-person { background: var(--gold-wash); color: var(--gold-strong); }
+.badge.completed { background: var(--ink-raised-2); color: var(--text-faint); }
+.badge.cancelled { background: var(--danger-wash); color: var(--danger); }
+
+.cancel-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text-faint);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s var(--ease);
+}
+.cancel-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+.past .appt-date-badge .day { color: var(--text-faint); }
+.past .appt-item { opacity: 0.85; }
+
+/* ---------- Need help ---------- */
+
+.help-card {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.help-card .help-text { max-width: 46ch; }
+.help-card .help-text p { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+.help-btn {
+  padding: 0.7rem 1.3rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--sage-soft);
+  background: var(--sage-wash);
+  color: var(--sage);
+  font-weight: 700;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  transition: background-color 0.2s var(--ease);
+}
+.help-btn:hover { background: var(--sage-soft); color: var(--text); }
+
+.help-contact {
+  display: none;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line-soft);
+  width: 100%;
+  font-size: 0.9rem;
+}
+.help-contact.show { display: block; }
+.help-contact .line { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.help-contact .num { font-family: 'Fraunces', serif; font-size: 1.3rem; color: var(--gold-strong); font-weight: 600; }
+.help-contact .emergency {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+/* ---------- Toast ---------- */
+
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink-raised-2);
+  border: 1px solid var(--sage);
+  color: var(--text);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  z-index: 100;
+  max-width: 90vw;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 980px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-right: none;
+    border-bottom: 1px solid var(--line-soft);
+    gap: 1.25rem;
+  }
+  .side-nav { flex-direction: row; }
+  .client-card { margin-top: 0; margin-left: auto; }
+  .side-nav li a span.label { display: none; }
+  .booking-grid { grid-template-columns: 1fr; }
+  .appt-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .profile-form { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .sidebar { flex-wrap: wrap; }
+  .side-nav { display: none; }
+  .slot-grid { grid-template-columns: repeat(2, 1fr); }
+  main { padding: 1.5rem 1rem 3rem; }
+  .help-card { flex-direction: column; align-items: stretch; }
+  .help-btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">India<span>Counsel</span></div>
+    <ul class="side-nav">
+      <li><a href="#profile"><span class="dot"></span><span class="label">Profile</span></a></li>
+      <li><a href="#booking" class="active"><span class="dot"></span><span class="label">Book Session</span></a></li>
+      <li><a href="#appointments"><span class="dot"></span><span class="label">Appointments</span></a></li>
+      <li><a href="#help"><span class="dot"></span><span class="label">Need Help</span></a></li>
+    </ul>
+    <div class="client-card">
+      <div class="avatar" id="sideAvatar">AS</div>
+      <div>
+        <div class="name" id="sideName">Aditi Sharma</div>
+        <div class="role">Client</div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <h1>Welcome back, <span id="greetName">Aditi</span></h1>
+      <div class="today" id="todayLabel"></div>
+    </div>
+
+    <section class="card" id="profile">
+      <h2>Your profile</h2>
+      <div class="profile-layout">
+        <div class="profile-avatar-block">
+          <div class="avatar" id="profileAvatar">AS</div>
+          <div class="tag">Client ID<br>IC-08421</div>
+        </div>
+        <div class="profile-form">
+          <div class="field">
+            <label for="pfName">Full name</label>
+            <input id="pfName" type="text" value="Aditi Sharma">
+          </div>
+          <div class="field">
+            <label for="pfPhone">Phone number</label>
+            <input id="pfPhone" type="tel" value="+91 98765 43210">
+          </div>
+          <div class="field">
+            <label for="pfEmail">Email</label>
+            <input id="pfEmail" type="email" value="aditi.sharma@example.com">
+          </div>
+          <div class="field">
+            <label for="pfLocation">City</label>
+            <input id="pfLocation" type="text" value="Bengaluru">
+          </div>
+          <div class="field">
+            <label for="pfLanguage">Preferred language</label>
+            <select id="pfLanguage">
+              <option>English</option>
+              <option>Hindi</option>
+              <option>Kannada</option>
+              <option>Tamil</option>
+              <option>Marathi</option>
+              <option>Bengali</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pfDob">Date of birth</label>
+            <input id="pfDob" type="date" value="1996-04-12">
+          </div>
+          <div class="profile-actions">
+            <button class="save-btn" id="saveProfile">Save changes</button>
+            <span class="saved-hint" id="savedHint">Saved</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="booking-grid" id="booking">
+
+      <div class="card">
+        <div class="cal-head">
+          <h2 id="calMonthLabel"></h2>
+          <div class="cal-nav">
+            <button id="prevMonth" aria-label="Previous month">‹</button>
+            <button id="nextMonth" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
+      <div class="card">
+        <h2>Book a session</h2>
+
+        <div class="section-label">Session type</div>
+        <div class="mode-toggle" id="modeToggle">
+          <button data-mode="online" class="active">Online video</button>
+          <button data-mode="in-person">In-person</button>
+        </div>
+
+        <div class="section-label">Counselor preference</div>
+        <div class="pref-toggle" id="prefToggle">
+          <button data-pref="auto" class="active">Assign for me</button>
+          <button data-pref="choose">Choose a counselor</button>
+          <button data-pref="own">Choose by location</button>
+        </div>
+
+        <div class="location-field" id="locationField" style="display:none;">
+          <label for="ownLocation">Your location<span class="required-mark">*</span></label>
+          <select id="ownLocation">
+            <option value="">Select your location</option>
+          </select>
+          <div class="field-error" id="locationError">Please select your location to see counselors near you.</div>
+        </div>
+
+        <div id="assignNote" class="assign-note" style="display:none;">
+          <span>🤝</span>
+          <span>We'll match you with an available counselor for your chosen session type when you confirm.</span>
+        </div>
+
+        <div class="counselor-list" id="counselorList"></div>
+
+        <div class="slot-section">
+          <h3 id="slotHeading">Available times</h3>
+          <div class="slot-grid" id="slotGrid"></div>
+        </div>
+
+        <button class="confirm-btn" id="confirmBtn" disabled>Select a date and time</button>
+      </div>
+
+    </section>
+
+    <section class="appt-grid" id="appointments">
+      <div class="card">
+        <h2>Upcoming appointments</h2>
+        <div class="appt-list" id="upcomingList"></div>
+      </div>
+      <div class="card past">
+        <h2>Previous appointments</h2>
+        <div class="appt-list" id="pastList"></div>
+      </div>
+    </section>
+
+    <section class="card help-card" id="help">
+      <div class="help-text">
+        <h2>Need help?</h2>
+        <p>If you're having trouble booking, or just want to talk something through with our support team before choosing a counselor, we're here for you.</p>
+      </div>
+      <button class="help-btn" id="helpToggle">Show contact number</button>
+      <div class="help-contact" id="helpContact">
+        <div class="line">📞 <span class="num">1800‑123‑4567</span></div>
+        <div class="line">✉️ support@indiacounsel.in</div>
+        <div class="line" style="color:var(--text-faint); font-size:0.82rem;">Toll‑free, Monday–Saturday, 9 AM – 9 PM IST</div>
+        <div class="emergency">If this is a mental health emergency, please contact your nearest hospital or local emergency services right away rather than waiting for a callback.</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "ic_dashboard_appointments_v2";
+  var PROFILE_KEY = "ic_dashboard_profile_v2";
+
+  var COUNSELORS = [
+    { id: "ananya",  name: "Dr. Ananya Rao",   spec: "Anxiety & Stress",       modes: ["online","in-person"], location: "Bengaluru" },
+    { id: "kabir",   name: "Kabir Mehta",       spec: "Career Counseling",      modes: ["online"],              location: "Mumbai" },
+    { id: "priya",   name: "Dr. Priya Nair",    spec: "Family & Relationships", modes: ["online","in-person"], location: "Mumbai" },
+    { id: "rohan",   name: "Rohan Verma",       spec: "Academic Counseling",    modes: ["online"],              location: "Pune" },
+    { id: "farida",  name: "Dr. Farida Sheikh", spec: "Personal Counseling",    modes: ["in-person"],           location: "Delhi" }
+  ];
+
+  var LOCATIONS = Array.from(new Set(COUNSELORS.map(function (c) { return c.location; }))).sort();
+
+  var ALL_SLOTS = ["9:00 AM","10:00 AM","11:00 AM","1:00 PM","2:00 PM","3:00 PM","4:00 PM"];
+  var MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  function initials(name) {
+    return name.replace(/^Dr\.\s*/, "").split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("").toUpperCase();
+  }
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function dateKey(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function isSameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+  function stripTime(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+  function hash(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) { h = ((h << 5) - h) + str.charCodeAt(i); h |= 0; }
+    return Math.abs(h);
+  }
+
+  var today = stripTime(new Date());
+
+  function seedAppointments() {
+    var past1 = new Date(today); past1.setDate(past1.getDate() - 18);
+    var past2 = new Date(today); past2.setDate(past2.getDate() - 7);
+    var upcoming1 = new Date(today); upcoming1.setDate(upcoming1.getDate() + 3);
+    return [
+      { id: "seed1", dateKey: dateKey(past1), time: "10:00 AM", mode: "online", counselorId: "ananya", counselorName: "Dr. Ananya Rao", location: null, status: "completed" },
+      { id: "seed2", dateKey: dateKey(past2), time: "2:00 PM", mode: "in-person", counselorId: "priya", counselorName: "Dr. Priya Nair", location: "Mumbai", status: "cancelled" },
+      { id: "seed3", dateKey: dateKey(upcoming1), time: "11:00 AM", mode: "online", counselorId: "kabir", counselorName: "Kabir Mehta", location: null, status: "upcoming" }
+    ];
+  }
+
+  function defaultProfile() {
+    return { name: "Aditi Sharma", phone: "+91 98765 43210", email: "aditi.sharma@example.com", location: "Bengaluru", language: "English", dob: "1996-04-12" };
+  }
+
+  function loadJSON(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key) || "null");
+      return v || fallback;
+    } catch (e) { return fallback; }
+  }
+  function saveJSON(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* no storage available; state stays in memory */ }
+  }
+
+  var state = { appointments: loadJSON(STORAGE_KEY, null) || seedAppointments() };
+  saveJSON(STORAGE_KEY, state);
+
+  var profile = loadJSON(PROFILE_KEY, null) || defaultProfile();
+
+  var view = {
+    calMonth: stripTime(new Date()),
+    selectedDate: null,
+    mode: "online",
+    preference: "auto",   // auto | choose | own
+    counselorChoice: null,
+    ownLocation: "",
+    time: null
+  };
+
+  // ---------- Profile ----------
+
+  function fillProfileForm() {
+    document.getElementById("pfName").value = profile.name;
+    document.getElementById("pfPhone").value = profile.phone;
+    document.getElementById("pfEmail").value = profile.email;
+    document.getElementById("pfLocation").value = profile.location;
+    document.getElementById("pfLanguage").value = profile.language;
+    document.getElementById("pfDob").value = profile.dob;
+    refreshProfileDisplays();
+  }
+
+  function refreshProfileDisplays() {
+    var initialsTxt = initials(profile.name) || "?";
+    document.getElementById("sideAvatar").textContent = initialsTxt;
+    document.getElementById("profileAvatar").textContent = initialsTxt;
+    document.getElementById("sideName").textContent = profile.name;
+    document.getElementById("greetName").textContent = profile.name.split(" ")[0];
+  }
+
+  document.getElementById("saveProfile").addEventListener("click", function () {
+    profile = {
+      name: document.getElementById("pfName").value.trim() || "Client",
+      phone: document.getElementById("pfPhone").value.trim(),
+      email: document.getElementById("pfEmail").value.trim(),
+      location: document.getElementById("pfLocation").value.trim(),
+      language: document.getElementById("pfLanguage").value,
+      dob: document.getElementById("pfDob").value
+    };
+    saveJSON(PROFILE_KEY, profile);
+    refreshProfileDisplays();
+    var hint = document.getElementById("savedHint");
+    hint.classList.add("show");
+    setTimeout(function () { hint.classList.remove("show"); }, 2000);
+    showToast("Profile updated.");
+  });
+
+  // ---------- Calendar ----------
+
+  function renderCalendar() {
+    document.getElementById("calMonthLabel").textContent = MONTH_NAMES[view.calMonth.getMonth()] + " " + view.calMonth.getFullYear();
+
+    var grid = document.getElementById("calGrid");
+    grid.innerHTML = "";
+
+    var year = view.calMonth.getFullYear();
+    var month = view.calMonth.getMonth();
+    var firstDay = new Date(year, month, 1).getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (var i = 0; i < firstDay; i++) {
+      var empty = document.createElement("div");
+      empty.className = "cal-day empty";
+      grid.appendChild(empty);
+    }
+
+    var apptDates = {};
+    state.appointments.forEach(function (a) { if (a.status === "upcoming") apptDates[a.dateKey] = true; });
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var thisDate = new Date(year, month, d);
+      var key = dateKey(thisDate);
+      var btn = document.createElement("button");
+      btn.className = "cal-day";
+      btn.type = "button";
+      btn.textContent = d;
+
+      var isPast = thisDate < today;
+      var isToday = isSameDay(thisDate, today);
+      var isSelected = view.selectedDate && isSameDay(thisDate, view.selectedDate);
+
+      if (isPast) {
+        btn.classList.add("past");
+        btn.disabled = true;
+      } else {
+        btn.classList.add("available");
+        btn.addEventListener("click", (function (dt) {
+          return function () {
+            view.selectedDate = dt;
+            view.time = null;
+            renderCalendar();
+            renderSlots();
+            updateConfirmState();
+          };
+        })(thisDate));
+      }
+
+      if (isToday) btn.classList.add("today");
+      if (isSelected) btn.classList.add("selected");
+
+      if (apptDates[key]) {
+        var dot = document.createElement("span");
+        dot.className = "has-appt";
+        btn.appendChild(dot);
+      }
+
+      grid.appendChild(btn);
+    }
+  }
+
+  document.getElementById("prevMonth").addEventListener("click", function () {
+    view.calMonth = new Date(view.calMonth.getFullYear(), view.calMonth.getMonth() - 1, 1);
+    renderCalendar();
+  });
+  document.getElementById("nextMonth").addEventListener("click", function () {
+    view.calMonth = new Date(view.calMonth.getFullYear(), view.calMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
+
+  // ---------- Mode toggle ----------
+
+  document.getElementById("modeToggle").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-mode]");
+    if (!btn) return;
+    view.mode = btn.getAttribute("data-mode");
+    document.querySelectorAll("#modeToggle button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+
+    if (view.counselorChoice) {
+      var c = COUNSELORS.find(function (c) { return c.id === view.counselorChoice; });
+      if (!c || c.modes.indexOf(view.mode) === -1) view.counselorChoice = null;
+    }
+    view.time = null;
+    renderPreferenceArea();
+    renderSlots();
+    updateConfirmState();
+  });
+
+  // ---------- Preference toggle (auto / choose / own) ----------
+
+  document.getElementById("prefToggle").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-pref]");
+    if (!btn) return;
+    view.preference = btn.getAttribute("data-pref");
+    document.querySelectorAll("#prefToggle button").forEach(function (b) { b.classList.toggle("active", b === btn); });
+    view.counselorChoice = null;
+    view.time = null;
+    renderPreferenceArea();
+    renderSlots();
+    updateConfirmState();
+  });
+
+  function populateLocationSelect() {
+    var sel = document.getElementById("ownLocation");
+    sel.innerHTML = '<option value="">Select your location</option>';
+    LOCATIONS.forEach(function (loc) {
+      var opt = document.createElement("option");
+      opt.value = loc;
+      opt.textContent = loc;
+      sel.appendChild(opt);
+    });
+    if (profile.location && LOCATIONS.indexOf(profile.location) !== -1) {
+      sel.value = profile.location;
+      view.ownLocation = profile.location;
+    }
+  }
+
+  document.getElementById("ownLocation").addEventListener("change", function (e) {
+    view.ownLocation = e.target.value;
+    document.getElementById("locationError").classList.remove("show");
+    view.counselorChoice = null;
+    renderPreferenceArea();
+    renderSlots();
+    updateConfirmState();
+  });
+
+  function renderPreferenceArea() {
+    var locationField = document.getElementById("locationField");
+    var assignNote = document.getElementById("assignNote");
+    var list = document.getElementById("counselorList");
+
+    locationField.style.display = view.preference === "own" ? "block" : "none";
+    assignNote.style.display = view.preference === "auto" ? "flex" : "none";
+    list.style.display = view.preference === "auto" ? "none" : "flex";
+    list.innerHTML = "";
+
+    if (view.preference === "auto") return;
+
+    var pool = COUNSELORS.filter(function (c) { return c.modes.indexOf(view.mode) !== -1; });
+
+    if (view.preference === "own") {
+      if (!view.ownLocation) {
+        var hint = document.createElement("div");
+        hint.className = "empty-hint";
+        hint.textContent = "Choose your location above to see counselors near you.";
+        list.appendChild(hint);
+        return;
+      }
+      pool = pool.filter(function (c) { return c.location === view.ownLocation; });
+    }
+
+    if (pool.length === 0) {
+      var empty = document.createElement("div");
+      empty.className = "empty-hint";
+      empty.textContent = view.preference === "own"
+        ? "No counselors offering " + (view.mode === "online" ? "online" : "in-person") + " sessions in " + view.ownLocation + " right now. Try another location or session type."
+        : "No counselors available for this session type right now.";
+      list.appendChild(empty);
+      return;
+    }
+
+    pool.forEach(function (c) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "counselor-option" + (view.counselorChoice === c.id ? " selected" : "");
+      btn.innerHTML =
+        '<div class="avatar">' + initials(c.name) + '</div>' +
+        '<div class="info"><div class="name">' + c.name + '</div>' +
+        '<div class="spec">' + c.spec + ' · ' + c.location + '</div></div>';
+      btn.addEventListener("click", function () {
+        view.counselorChoice = c.id;
+        view.time = null;
+        renderPreferenceArea();
+        renderSlots();
+        updateConfirmState();
+      });
+      list.appendChild(btn);
+    });
+  }
+
+  function resolveCounselorForBooking() {
+    if (view.preference === "auto") {
+      var pool = COUNSELORS.filter(function (c) { return c.modes.indexOf(view.mode) !== -1; });
+      var counts = {};
+      pool.forEach(function (c) { counts[c.id] = 0; });
+      state.appointments.forEach(function (a) {
+        if (a.status === "upcoming" && counts.hasOwnProperty(a.counselorId)) counts[a.counselorId]++;
+      });
+      pool.sort(function (a, b) { return counts[a.id] - counts[b.id] || a.name.localeCompare(b.name); });
+      return pool[0] || null;
+    }
+    return COUNSELORS.find(function (c) { return c.id === view.counselorChoice; }) || null;
+  }
+
+  // ---------- Time slots ----------
+
+  function renderSlots() {
+    var slotGrid = document.getElementById("slotGrid");
+    var heading = document.getElementById("slotHeading");
+    slotGrid.innerHTML = "";
+
+    if (!view.selectedDate) {
+      heading.textContent = "Available times";
+      var hint = document.createElement("div");
+      hint.className = "empty-hint";
+      hint.textContent = "Pick a date on the calendar to see open times.";
+      slotGrid.appendChild(hint);
+      return;
+    }
+
+    var counselor = resolveCounselorForBooking();
+    if (view.preference !== "auto" && !counselor) {
+      heading.textContent = "Available times";
+      var hint2 = document.createElement("div");
+      hint2.className = "empty-hint";
+      hint2.textContent = "Choose a counselor first to see their open times.";
+      slotGrid.appendChild(hint2);
+      return;
+    }
+
+    heading.textContent = "Available times — " + view.selectedDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+
+    var seed = dateKey(view.selectedDate) + "|" + (counselor ? counselor.id : "any");
+
+    ALL_SLOTS.forEach(function (slot) {
+      var blocked = (hash(seed + slot) % 5) === 0;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "slot-btn" + (view.time === slot ? " selected" : "");
+      btn.textContent = slot;
+      btn.disabled = blocked;
+      if (!blocked) {
+        btn.addEventListener("click", function () {
+          view.time = slot;
+          renderSlots();
+          updateConfirmState();
+        });
+      }
+      slotGrid.appendChild(btn);
+    });
+  }
+
+  // ---------- Confirm state & booking ----------
+
+  function preferenceSatisfied() {
+    if (view.preference === "auto") return true;
+    if (view.preference === "choose") return !!view.counselorChoice;
+    if (view.preference === "own") return !!view.ownLocation && !!view.counselorChoice;
+    return false;
+  }
+
+  function updateConfirmState() {
+    var btn = document.getElementById("confirmBtn");
+    var ready = view.selectedDate && view.time && preferenceSatisfied();
+
+    if (ready) {
+      btn.disabled = false;
+      btn.textContent = "Confirm " + (view.mode === "online" ? "online" : "in-person") + " session";
+    } else {
+      btn.disabled = true;
+      if (view.preference === "own" && !view.ownLocation) {
+        btn.textContent = "Select your location";
+      } else if ((view.preference === "choose" || view.preference === "own") && !view.counselorChoice) {
+        btn.textContent = "Select a counselor";
+      } else if (!view.selectedDate) {
+        btn.textContent = "Select a date and time";
+      } else if (!view.time) {
+        btn.textContent = "Select a time";
+      } else {
+        btn.textContent = "Complete the fields above";
+      }
+    }
+  }
+
+  document.getElementById("confirmBtn").addEventListener("click", function () {
+    if (!view.selectedDate || !view.time || !preferenceSatisfied()) {
+      if (view.preference === "own" && !view.ownLocation) {
+        document.getElementById("locationError").classList.add("show");
+      }
+      return;
+    }
+    var counselor = resolveCounselorForBooking();
+    if (!counselor) return;
+
+    var appt = {
+      id: "a" + Date.now(),
+      dateKey: dateKey(view.selectedDate),
+      time: view.time,
+      mode: view.mode,
+      counselorId: counselor.id,
+      counselorName: counselor.name,
+      location: view.mode === "in-person" ? counselor.location : null,
+      status: "upcoming"
+    };
+    state.appointments.push(appt);
+    saveJSON(STORAGE_KEY, state);
+
+    showToast("Session booked with " + counselor.name + " on " +
+      view.selectedDate.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " at " + view.time + ".");
+
+    view.selectedDate = null;
+    view.time = null;
+    view.preference = "auto";
+    view.counselorChoice = null;
+    view.ownLocation = profile.location && LOCATIONS.indexOf(profile.location) !== -1 ? profile.location : "";
+    document.querySelectorAll("#prefToggle button").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-pref") === "auto"); });
+    document.getElementById("ownLocation").value = view.ownLocation;
+
+    renderPreferenceArea();
+    renderCalendar();
+    renderSlots();
+    updateConfirmState();
+    renderAppointments();
+  });
+
+  // ---------- Appointments lists ----------
+
+  function keyToDate(key) {
+    var parts = key.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function apptCard(a, isPast) {
+    var d = keyToDate(a.dateKey);
+    var wrap = document.createElement("div");
+    wrap.className = "appt-item";
+
+    var statusBadge = "";
+    if (isPast) {
+      statusBadge = '<span class="badge ' + (a.status === "cancelled" ? "cancelled" : "completed") + '">' + (a.status === "cancelled" ? "Cancelled" : "Completed") + '</span>';
+    }
+
+    wrap.innerHTML =
+      '<div class="appt-date-badge"><div class="month">' + MONTH_NAMES[d.getMonth()].slice(0, 3) + '</div><div class="day">' + d.getDate() + '</div></div>' +
+      '<div class="appt-info">' +
+        '<div class="with">' + a.counselorName + '</div>' +
+        '<div class="meta">' +
+          '<span class="badge ' + a.mode + '">' + (a.mode === "online" ? "Online" : "In-person") + '</span>' +
+          statusBadge +
+          a.time +
+        '</div>' +
+        (a.location ? '<div class="loc">📍 ' + a.location + '</div>' : '') +
+      '</div>';
+
+    if (!isPast) {
+      var cancelBtn = document.createElement("button");
+      cancelBtn.className = "cancel-btn";
+      cancelBtn.type = "button";
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.addEventListener("click", function () {
+        a.status = "cancelled";
+        saveJSON(STORAGE_KEY, state);
+        showToast("Appointment on " + d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " cancelled.");
+        renderCalendar();
+        renderAppointments();
+      });
+      wrap.appendChild(cancelBtn);
+    }
+
+    return wrap;
+  }
+
+  function renderAppointments() {
+    var upcomingList = document.getElementById("upcomingList");
+    var pastList = document.getElementById("pastList");
+    upcomingList.innerHTML = "";
+    pastList.innerHTML = "";
+
+    var upcoming = state.appointments
+      .filter(function (a) { return a.status === "upcoming" && keyToDate(a.dateKey) >= today; })
+      .sort(function (a, b) { return keyToDate(a.dateKey) - keyToDate(b.dateKey); });
+
+    var past = state.appointments
+      .filter(function (a) { return a.status !== "upcoming" || keyToDate(a.dateKey) < today; })
+      .sort(function (a, b) { return keyToDate(b.dateKey) - keyToDate(a.dateKey); });
+
+    if (upcoming.length === 0) {
+      var e1 = document.createElement("div");
+      e1.className = "empty-hint";
+      e1.textContent = "No upcoming sessions yet — book one above.";
+      upcomingList.appendChild(e1);
+    } else {
+      upcoming.forEach(function (a) { upcomingList.appendChild(apptCard(a, false)); });
+    }
+
+    if (past.length === 0) {
+      var e2 = document.createElement("div");
+      e2.className = "empty-hint";
+      e2.textContent = "Your past sessions will appear here.";
+      pastList.appendChild(e2);
+    } else {
+      past.forEach(function (a) { pastList.appendChild(apptCard(a, true)); });
+    }
+  }
+
+  // ---------- Need help ----------
+
+  document.getElementById("helpToggle").addEventListener("click", function () {
+    var box = document.getElementById("helpContact");
+    var showing = box.classList.toggle("show");
+    this.textContent = showing ? "Hide contact number" : "Show contact number";
+  });
+
+  // ---------- Toast ----------
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 3200);
+  }
+
+  // ---------- Init ----------
+
+  document.getElementById("todayLabel").textContent =
+    today.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+
+  fillProfileForm();
+  populateLocationSelect();
+  renderCalendar();
+  renderPreferenceArea();
+  renderSlots();
+  updateConfirmState();
+  renderAppointments();
+
+})();
+</script>
+</body>
+</html>
